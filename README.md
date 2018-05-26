@@ -36,6 +36,31 @@ already sorted!
 为什么没有泡沫排序？更难写，易出错，又更慢  
 
 ### template 一劳永逸地写出排序
-* A proliferation of Swap
+* A proliferation of Swap  
+作为引子。  
 * Function template 
+用法比class template简单，不用<>来表示什么类型，complier会根据传递的参数来infer  
+* Instantation errors
+### Client use of sort template
+并不是什么都可以比较，有些比较需要额外的比较函数
+## Lec17
+* sort template with callback fn
+    * Now can truly work for all types!
+    * Supplying callback fn
+* Final version of Sort template
+默认使用大于小于
+* Use of Sort template
+* Why object-oriented programming?
+    * Most programs organized around data
+        * Making data the focus is good fit
+    * Astraction
+    * Capsulation
+    * Modularity in development
+    * Package reuse
+* Class division
+java 没有分，都在一个文件，有好有坏, 好处：一处改就好，坏处：细节暴露给用户
+* Class interface in .h file
+    * Class interface lists data and operations
+    
+    
 
