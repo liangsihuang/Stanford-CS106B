@@ -61,6 +61,53 @@ already sorted!
 java 没有分，都在一个文件，有好有坏, 好处：一处改就好，坏处：细节暴露给用户
 * Class interface in .h file
     * Class interface lists data and operations
+* Accessing members
+    * Members 
+* Class implementation
+    * Implementation goes in .cpp file
+        * Must #include class.h file
+    scoping :: 否则也不知道hour是什么
+* Implementing member functions
+    * Members of receiver accessible 
+* Maintaining object consistency
+* Constructors
+* Destructors  
+Java没有
+### Basic thoughts on object design
+
+## Lec18
+
+* ADTs (abstract data types)
+    * Client uses class as abstraction
+    * Client can't and shouldn't muck with internals
+    * 
+    * Lexicon 词典？
+* Why ADTs?
+    * Abstraction
+    * Encapsulation
+    * Independence
+    * Flexibility
+### Let's implement Vectors!
+```cpp
+#ifdef _ //??
+# //??
+class MyVector
+{
+public:
+    MyVector();
+    -MyVector();
     
+    int size();
+    void add(string s);
+    string getAt(int index);
+    
+private:
+    string *arr;
+    int numUsed, numAllocated;
+}
+```
+## Lec19
+* Quirky C++ template compilation ??? "古怪离奇"
+### Implement Stack and Queue
     
 
