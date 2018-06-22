@@ -127,11 +127,18 @@ double GetScoresAndAverage(int numScores)
 * int RandomInteger(int low, int high)
    * Returns int chosen at random from range low-high inclusive
 * double RandomReal(double low, double high)
-   * same, but for real values
+   * Same, but for real values
 * bool RandomChance(double probability)
    * Returns true with odds of probability, false otherwise
 * Coherent, convenient, complete
-
+### C++ string
+* Models a sequence of characters
+* string defines a class, strings are objects
+   * many operations are member functions that operate on receiver string
+* Simple operations
+   * member function `.length` returns number of chars
+   * square brackets to access individual chars
+   * 
 
 
 ## Lec14
