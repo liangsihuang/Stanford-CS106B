@@ -117,7 +117,21 @@ double GetScoresAndAverage(int numScores)
    * #include "random.h"
    * Capitalized verbose names: GetInteger RandomChange DrawLine
 
-## Lec02
+## Lec03
+### CS106 random.h
+* Library of functions to provide randomness
+   * Support for shuffing, dice-rolling, coin-flipping, etc.
+   * Free functions
+* void Randomize()
+   * Call once at start to initialize new random sequence
+* int RandomInteger(int low, int high)
+   * Returns int chosen at random from range low-high inclusive
+* double RandomReal(double low, double high)
+   * same, but for real values
+* bool RandomChance(double probability)
+   * Returns true with odds of probability, false otherwise
+* Coherent, convenient, complete
+
 
 
 ## Lec14
