@@ -75,6 +75,50 @@ double GetScoresAndAverage(int numScores)
     ```
 ### C++ parameter passing
 * Default is pass-by-value
+   * Parameter copies value, changes affect local copy
+   ```cpp
+   void Binky(int x, int y)
+   {
+      x* = 2;
+      y = 0;
+    }
+    int main()
+    {
+      int a = 4, b = 20;
+      Binky(a, b);
+      ...
+    }
+   ```
+* Add & to declaration for pass-by-reference
+   * Parameter is now reference to original variable, which can change
+   ```
+   void Binky(int &x, int y)
+   {
+      x* = 2;
+      y = 0;
+   }
+   int main()
+   {
+      int a = 4, b = 20;
+      Binky(a,b);
+      ...
+   }
+   * Ref param also used for efficiency to avoid coping large data
+### C++ libraries
+* Groups related operations
+   * Header file provides function prototypes and usage comments
+   * Compiled library contains implementation
+* C++ standard libraries
+   * e.g. string, iostream, fstream
+   * #include <iostream>
+   * Terse, lowercase names: cout getline substr
+* CS106 libraries
+   * e.g. simpio, random, graphics
+   * #include "random.h"
+   * Capitalized verbose names: GetInteger RandomChange DrawLine
+
+## Lec02
+
 
 ## Lec14
 Algorithm analysis  
