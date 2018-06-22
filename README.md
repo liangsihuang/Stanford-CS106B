@@ -1,4 +1,80 @@
 # Stanford-CS106B
+## Lec02
+### C++ vs Java : what's the same?
+* General syntax
+    * comment sequence
+    * use of braces, parentheses, commas, semi-colons
+    * variable/parameter declarations, function call
+* Primitive variable types
+    * char, int, double, but note Java boolean is C++ bool
+* Operators
+    * arithmetic, relational, logical
+* Control structures
+    * for, while, if/else, switch, return
+### Dissecting a C++ program
+```cpp
+/*
+ * average.cpp
+ * -------------
+ * This program adds scores and prints their average.
+ */
+
+# include "genlib.h"
+# include "simpio.h"
+# include <iostream>
+
+const int NumScores = 4;
+
+double GetScoresAndAverage(int numScores);
+
+int main()
+{
+    cout << "This program averages" << NumScores << "scores." << endl;
+    double average = GetScoresAndAverage(NumScores);
+    cout << "The average is " << average << "." << endl;
+    return 0;
+}
+```
+### average.cpp (cont'd)
+```cpp
+/* Function: GetScoresAndAverage
+ * Usage: avg = GetScoresAndAverage(10);
+ * ------------------------------------
+ * This function prompts the user for a set of values and returns
+ * the average.
+ */
+double GetScoresAndAverage(int numScores)
+{   
+    int sum = 0;
+    for (int i = 0; i < numScores; i++) {
+        cout << "Next score? ";
+        int nextScore = GetInteger();
+        sum += nextScore;
+    }
+    return double(sum)/numScores;
+}       
+```
+### C++ user-defined types
+* Enumerations
+    * Define new type with set of constrained options 
+    ```cpp
+    enum directionT {North, South, East, West};
+    directionT dir =East;
+    if (dir == West) ...
+    ```
+* Records
+    * Define new type which aggregates a set of fields
+    ```cpp
+    struct pointT {
+        double x;
+        double y;
+    };
+    pointT p,q;
+    p.x = 0;
+    p = q;
+    ```
+### C++ parameter passing
+* Default is pass-by-value
 
 ## Lec14
 Algorithm analysis  
