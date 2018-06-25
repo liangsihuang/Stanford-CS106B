@@ -1196,8 +1196,46 @@ void MoveTower(int n, char src, char dst, char tmp)
     }
 }
 ```
-lec09 未完待续
+### Permutations
+* Want to enumerate all rearrengements:
+    * ABCD permutes to DCBA, CABD, etc.
+* Solving recursively
+    * Choose a letter from input to append to output
+    * Recursively permute remaining letters onto output
+    * What other options do you need to explore?
+    * How to ensure each letter is used exactly once?
+    * What is the base case?
+### Permute strategy
+* Result is empty, starting input is "abcd"
+* Choose a letter to be first, say "a"
+* Result so far is "a", remaining input is "bcd"
+* Recursively permute to get all "bcd" combos
+* After finishing permutations with "a" in front, need to go again with "b" in front and then "c" and so on
+### Permute code
+```cpp
+void RecPermute(string soFar, string rest)
+{
+    if (rest == "") {
+        cout << soFar << endl;
+    } else {
+        for (int i = 0; i < rest.length(); i++) {
+            string next = soFar + rest[i];
+            string remaining = rest.substr(0, i) + rest.substr(i+1);
+            RecPermute(next, remaining);
+        }
+    }
+}
 
+// "wrapper" function
+void ListPermutations(string s)
+{
+    RecPermute("", s);
+}
+```
+### Tree of recursive calls
+![](https://github.com/liangsihuang/Stanford-CS106B/raw/master/pics/tree.png) 
+
+##Lec10
 
 
 
