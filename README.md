@@ -859,8 +859,32 @@ int main()
 
 ### Supplying callback function
 ```cpp
-struct studentT
+struct studentT {
+    string first, last;
+    int idNum;
+}
+int CmpById(studentT a, studentT b)
+{
+    if (a.idNum < b.idNum) return -1;
+    else if (a.idNum == b. idNum) return 0;
+    else return 1;
+}
+int main()
+{
+    Set<studentT> set(CmpById); // ok!
+}
+```
+### Building things: ADTs rock!
+* Map of Set
+    * Google's web index (word to matching pages)
+* Vector of Queues
+    * Grocery store chechout lines
+* Set of sets
+    * Different speciality pizzas
+* Stack of Maps
+    * Compiler use to enter/exit nested scopes
 
+## Lec07
 
 
 
