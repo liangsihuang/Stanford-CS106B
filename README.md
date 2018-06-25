@@ -967,9 +967,236 @@ int main()
 * Recursive problems have "self-similar" structure in solution
 
 ## Lec08
+### Solving problems recursively
+* A recursive function calls itself - wacky!
+* Idea: solve problem using coworkers (clones) who work and act like you
+    * Delegate similar, smaller problem to clone
+    * Combine result from clone(s) to solve total problem
+    * Work toward trival version that is directly solvable
+* For porblems that exhibit "self-similarity"
+    * Structure repeats within at different levels of scale
+    * Solving larger problem means solving smaller problem(s) within
+* Feels mysterioius at first
+    * "Leap of faith"required
+    * With pratice, master the art of recursive decomposition
+    * Eventually grok the underlying patterns
+### Functional recursion
+* Function that returns answer/result
+    * Outer problem result uses result from smaller, same problem(s)
+* Base case
+    * Simplest version of problem
+    * Can be directly solved
+* Recursive case
+    * Make call(s) to self to get results for smaller, simpler version(s)
+    * Recursive calls must advance toward base case
+    * Results of recursive calls combined to solve larger version
+### Power example
+* C++ has no exponentiation op
+* Iterative formulation for Raise function
+```cpp
+int Raise(int base, int exp)
+{
+    int result = 1;
+    for(int i = 0; i < exp; i++)
+        result *= base;
+    return result;
+}
+```
+### Recursive version
+```cpp
+int Raise(int base, int exp)
+{
+    if (exp == 0)
+        return 1;
+    else
+        return base * Raise(base, exp-1);
+}
+```
+### More efficient recursion
+```cpp
+int Raise(int base, int exp)
+{
+    if (exp == 0)
+        return 1;
+    else {
+        int half = Raise(base, exp/2);
+        if (exp % 2 == 0)
+            return half * half;
+        else
+            return base * half * half;
+    }
+}
+```
+### Avoid "arm's length" recursion
+* Aim for simple, clean base case
+    * No need to anticipate other earlier stopping points
+    * Avoid looking ahead before recursive calls, just let simple base case handle
+### Recursion and efficiency
+* Recursion provides no guarantee of (in)efficiency
+    * Recursion can require same resources as alternative approach
+        * Or recursion may be much more or much less efficient
+    * For problems with simple iterative solution, iteration is likely the best
+* Why recursion then?
+    * Can express with clear, direct, elegant code
+    * Can intuitively model a task that is recursive in nature
+    * Solution may require recursion - iteration won't do!
+### Palindromes
+* A palindrome string reads same when reversed
+    * e.g. "was it a car or a cat i saw"
+* Recursive insight
+    * First and last letter match and interior is palindrome
+* Base case?
+```cpp
+bool IsPalindrome(string s)
+{
+    if (s.length() <= 1) return true;
+    return s[0] == s[s.length()-1] && IsPalindrome(s.substr(1,s.length()-2));
+}
+```
+### Binary search
+* Searching for key within vector
+    * Linear search starts at beginning and searches to end
+    * Binary search uses divide-and-conquer (requires `sorted` vector)
+        * Much faster method!
+* Recursive insight:
+    * Consider middle elem of vector, if key, you're done
+    * Otherwise decide which half to recursively search
+* Base case?
+### Binary search code
+```cpp
+const int NotFound = -1;
+int BSearch(Vector<string> &v, int start, int stop, string key)
+{
+    if (start > stop) return NotFound;
+    int mid = (start + stop)/2;
+    if (key == v[mid])
+        return mid;
+    else if (key < v[mid])
+        return BSearch(v, start, mid-1, key);
+    else
+        return BSearch(v, mid+1, stop, key);
+}
+```
+* Classic "divide and conquer" algorithm
+    * Operates very efficiently! Double size of vector, how much longer to search?
+### Choosing a subset
+* Given N things, how many different ways can you choose K of them?
+    * e.g. given a dorm of 60 people, how many different groups of 4 people can go together to Flicks?
+* N-choose-K, written as C(n, k)
+![](https://github.com/liangsihuang/Stanford-CS106B/raw/master/pics/choose.png)  
+### Choose code
+* Simplest base case
+    * when no choices remain at all
+```cpp
+int C(int n, int k)
+{
+    if (k == 0 || k == n)
+        return 1;
+    else
+        return C(n-1, k) + C(n-1, k-1);
+}
+```
+## Lec09 procedural recursion
+### Thinking recursively
+* Recursive decomposition is the hard part
+    * Find recursive sub-structure
+        * Solve problem using result from smaller subproblem(s)
+    * Identify base case
+        * Simplest possible case, directly solvable, recursion advances to it
+* Common patterns
+    * Handle first and/or last, recur on remaining
+    * Divide in half, recur on one/both halves
+    * Make a choice among options, recur on updated state
+* Placement of recursive call(s)
+    * Recur-then-process versus process-then-recur
+### Procedural vs functional
+* Functional recursion
+    * Function returns result
+    * Computers using result from recursive call(s)
+* Procedural recursion
+    * No return value (function returns void)
+    * Task accomplished during recursive calls
+* Example: drawing fractal
+    * Self-similar structure
+    * Repeats itself within
+    * Outer fractal makes recursive call to draw inner fractal(s)
+### A familiar fractal
+```cpp
+void DrawFractal (double x, double y, double w, double h)
+{
+    DrawTriangle(x, y, w, h);
+    if (w < .2 || h < .2) return;
+    double halfH = h/2;
+    double halfW = w/2;
+    DrawFractal(x, y, halfW, halfH); // left
+    DrawFractal(x + halfW/2, y + halfH, halfW, halfH); // top
+    DrawFractal(x + halfW, y, halfW, halfH); // right
+}
+```
+![](https://github.com/liangsihuang/Stanford-CS106B/raw/master/pics/fractal.png)  
+### Recursive art
+* Piet Mondrian
+![](https://github.com/liangsihuang/Stanford-CS106B/raw/master/pics/Mondrian.png) 
+### Random pseudo-Mondrian
+* Choose one of three opetions
+    * Divide canvas horizontally
+    * Divide canvas vertically
+    * Do nothing
+* Dividing produces two smaller canvases
+    * That can also be recursively painted in Mondrian style
+* Base case stops at too-small canvas
+### Mondrian code
+```cpp
+void DrawMondrian(double x, double y, double w, double h)
+{
+    if (w < 1 || h < 1) return; // base case
+    FillRectangle(x, y, w, h, RandomColor()); // fill background
+    switch (RandomInteger(0, 2)) {
+        case 0: // do nothing
+            break;  
+        case 1: // bisect vertically
+            double midX = RandomReal(0, w);
+            DrawBlackLine(x+midX, y, h);
+            DrawMondrian(x, y, midX, h);
+            DrawMondrian(x+midX, y, w-midX, h);
+            break;
+        case 2: // bisect horizontally
+            double midY = RandomReal(0, h);
+            DrawBlackLine(x, y+midY, w);
+            DrawMondrian(x, y, w, midY);
+            DrawMondrian(x, y+midY, w, h-midY);
+            break;         
+    }
+}
+```
 
-
-
+### Towers
+* Set of graduated disks stacked on a spindle
+* Goal is move tower from source to destination
+* Rules
+    * All disks on a spindle (when not actively being moved)
+    * Have one spare spindle
+    * Can move only one disk at a time
+    * Can only place disk on top of larger disk
+### Tower recursion
+* Move tower of height N from A to B, using C
+    * Starting thought: devide the tower
+        * What is smaller instance of similar problem that helps?
+        * Divide N height tower into one disk and tower of height N-1?
+            * Which one to separate? Top or bottom disk?
+            * What do you do with other tower?
+### Tower code
+```cpp
+void MoveTower(int n, char src, char dst, char tmp)
+{
+    if (n > 0) {
+        MoveTower(n-1, src, tmp, dst);
+        MoveSingleDisk(src, dst);
+        MoveTower(n-1, tmp, dst, src);
+    }
+}
+```
+lec09 未完待续
 
 
 
