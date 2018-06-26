@@ -1871,7 +1871,7 @@ void MoveTower(int n, char src, char dst, char tmp)
     * Typically sort array/vector, but algorithms usually can be adapted for other data structures (e.g. linked list)
 ### Selection sort
 * Select smallest and move to front
-    * Search to find minomum
+    * Search to find minimum
     * Place in first slot 
     * Could move elements over to make space, but faster just swap with current first
     * Repeat for second smallest, third, so on
@@ -1889,7 +1889,93 @@ void SelectionSort(Vector<int> &arr)
     }
 }
 ```
+### 10^6 instr/sec runtimes
+![](https://github.com/liangsihuang/Stanford-CS106B/raw/master/pics/runtime.png)
+### Growth patterns
+![](https://github.com/liangsihuang/Stanford-CS106B/raw/master/pics/growthpatterns.png)
+
 ## lec15
+### Selection sort analysis
+* Count work inside loops
+    * First iteration does N-1 compares, second does N-2, and so on
+    * one swap per iteration
+![](https://github.com/liangsihuang/Stanford-CS106B/raw/master/pics/selectionsort.png)
+
+### Insertion sort algorithm
+* How you might sort hand of just-dealt cards...
+    * Each subsequent element inserted into proper place
+        * Start with first element (already sorted)
+        * Insert next element relative to first
+        * Repeat for third, fourth, etc.
+        * Slide elements over to make space during insert
+* Insertion sort code
+```cpp
+void InsertionSort(Vector<int> &v)
+{
+    for (int i = 1; i < v.size(); i++) {
+        int cur = v[i]; // slide cur down into position to left
+        for (int j=i-1; j >= 0 && v[j] > cur; j--)
+            v[j+1] = v[j];
+        v[j+1] = cur;
+    }
+}
+```
+### Insertion sort analysis
+* Count work inside loops
+    * First time inner loop does 1 compare/move
+    * Second iteration does <= 2 compare/move, third <= 3, and so on
+    * Last iteration potentially N-1 comparisons
+* Cases
+    * What is best case? Worst case?
+    * Average (expected) case?
+### Insertion vs Selection
+* Big O?
+* Mix of operations?
+    * Number of comparisons vs moves
+* Best/worst inputs?
+* Ease of coding?
+* Why do we need multiple algorithms?
+### Quadratic growth
+* In clock time 
+    * 10,000    3 sec
+    * 20,000    13 sec
+    * 50,000    77 sec
+    * 100,000   5 min
+* Double input -> 4X time
+    * Feasible for small inputs, quickly unmanageble
+* Halve input -> 1/4 time
+    * Hmm... can recursion save the day>
+    * If have two sorted halves, how to produce sorted full result?
+
+### Mergesort idea
+* "Divide and conquer" algorithm
+    * Divide input in half
+    * Recursively sort each half
+    * Merge two halves together
+* "Easy-split hard-join"
+    * No complex decision about which goes where, just divide in middle
+    * Merge step preserves ordering from each half
+### Merge sort code
+```cpp
+void MergeSort(Vector<int> &v)
+{
+    if (v.size() > 1) {
+        int n1 = v.size()/2;
+        int n2 = v.szie() - n1;
+        Vector<int> left = Copy(v, 0, n1);
+        Vector<int> right = Copy(v, n1, n2);
+        MergeSort(left);
+        MergeSort(right);
+        Merge(v, left, right);
+    }
+}
+```
+* T(N) = N + 2T(N/2)
+### Mergesort analysis
+![](https://github.com/liangsihuang/Stanford-CS106B/raw/master/pics/mergesort.png)
+
+15 未完待续
+    
 
 
 
