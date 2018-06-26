@@ -1470,6 +1470,257 @@ int main()
 }
 ```
 ## Lec12
+### Pointer basics
+* Pointers are distinguished by type of pointee
+    * Type `double*` not same as int `int*`
+* Pointers are uninitialized until assigned
+    * Dereferencing a uninitialized pointer is bad news
+* Dynamic allocation via new
+    * Operator `new` allocates memory from heap, returns address
+* Manual deallocation via delete
+    * Forgetting to delete means memory is orphaned
+    * Accessing deleted memory has unpredictable consuquences
+### Pointers and dynamic arrays
+```cpp
+int main()
+{
+    int *arr = new int[10];
+    for (int i = 0; i < 10; i++)
+        arr[i] = i;
+    delete[] arr; // delete[] if allocated with new[]
+}
+```
+* Raw arrays can be trouble
+    * Manually allocated and deallocated
+    * Don't know their length
+    * No bounds-checking
+    * Cannot easily change size once allocated
+        * Allocate new space, copy over, update pointer
+* Vector uses array behind scenes, but hides issue
+### Use of pointers
+* Axess database
+```cpp
+struct studentT {
+    string first, last;
+    string address, phone;
+}
+struct courseT {
+    string dept, name;
+    Vector<studentT *> students;
+}
+```
+* A course has pointers to enrolled students
+    * Allocate studentT record in heap for new student
+    * Each course student enrolls in stores pointer to record
+    * Saves space by not repeating student information
+    * If student gets new phone number, change in one place only!
+### Recursive data
+* Recursion applied to data
+    * Self-referential, self-similar
+    * Within itself, data has smaller version repeated
+* Examples
+    * Matroshka dolls
+    * Nesting boxes
+    * Onions
+    * Structure containing pointer to same structure
+### A recursive struct
+```cpp
+struct Entry {
+    string name, address, phone;
+    Entry *next;
+}
+```
+* Each entry points to another Entry!
+* Wired together, you get a linked list!
+![](https://github.com/liangsihuang/Stanford-CS106B/raw/master/pics/linkedlist.png)
+### Creating a node
+```cpp
+Entry *GetNewEntry()
+{
+    cout << "Enter name (ENTER to quit):";
+    string name = GetLine();
+    if (name == "") return NULL;
+
+    Entry *newOne = new Entry;
+    newOne->name = name;
+    cout << "Enter address: ";
+    newOne->address = GetLine();
+    cout << "Enter phone: ";
+    newOne->phone = GetLine();
+    newOne->next = NULL; // no one follows
+    return newOne;
+}
+```
+### Building a linked list of nodes
+```cpp
+Entry *BuildAddressBook()
+{
+    Entry *listHead = NULL;
+    while (true) {
+        Entry *newOne = GetNewEntry();
+        if (newOne == NULL) break;
+        newOne ->next = listHead;
+        listHead = newOne;
+    }
+    return listHead;
+}
+```
+* What order does this build the list in?
+### Printing list
+```cpp
+void PrintEntry(Entry *entry)
+{
+    cout << entry->name << " " << entry->phone << endl;
+}
+void PrintList(Entry *list)
+{
+    for (Entry *cur = list; cur!= NULL; cur = cur->next)
+        PrintEntry(cur);
+}
+```
+* Idiomatic loop to iterate over list, compare to
+` for (int i = 0; i < n; i++)`
+
+## Lec13
+### A recursive twist on printing
+* Iteration replaced with recursion
+```cpp
+void PrintList(Entry *list)
+{
+    if (list != NULL) {
+        PrintEntry(list);
+        PrintList(list->next);
+    }
+}
+```
+* What happens if we switch the order of these two lines?
+### Recursive data -> recursive ops
+* Natural to operate on linked list recursively
+    * List divides into first node and rest of list
+    * Base case: empty list
+    * Recursive case: handle first node, recur on rest
+```cpp
+int Length(Entry *list)
+{
+    if (list == NULL)
+        return 0;
+    else
+        return 1 + Length(list->next);
+}
+void Deallocate(Entry *list)
+{
+    if (list != NULL) {
+        Deallocate(list->next);
+        delete list;
+    }
+}
+```
+### Watch the pointer!
+* (Decompose function to add node to front of list)
+```cpp
+void Prepend(Entry *ent, Entry *first)
+{
+    ent->next = first;
+    first = ent;  // Buggy!
+}
+Entry *BuildAddressBook()
+{
+    Entry *listHead = NULL;
+    while (true) {
+        Entry *newOne = GetNewEntry();
+        if (newOne == NULL) break;
+        Prepend(newOne, listHead);
+    }
+    return listHead;
+}
+```
+### Passing pointer by reference
+* Tiny modification saves the day!
+```cpp
+void Prepend(Entry *ent, Entry *& first)
+```
+### Array vs linked list
+* Array/vector stores elements in contiguous memory
+    * + Fast, direct access by index
+    * - Insert/remove requires shuffing
+    * - Cannot easily grow/shrink (must copy over contents)
+* Linked list wires elements together using pointers
+    * + Insert/remove only requires re-wiring pointers
+    * + Each element individually allocated, easy to grow/shrink
+    * - Must traverse links to access elements
+### Insert in sorted order
+* Traverse list to find the position to insert
+    * What is true after the loop exists?
+    ```cpp
+    void InsertSorted(Entry * &list, Entry *newOne)
+    {
+        Entry *cur;
+        for (cur = list; cur != NUll; cur = cur->next){
+            if (newOne->name < cur->name) break;
+        }
+    }
+    ```
+* Drag previous pointer (one behind cur)
+    * prev/cur move down list in parallel, one node apart
+    ```cpp
+    void InsertSorted(Entry * &list, Entry * newOne)
+    {
+        Entry *cur, *prev = NULL;
+        for (cur=list; cur!=NULL; cur=cur->next){
+            if (newOne->name < cur->name) break;
+            prev = cur;
+        }
+        // what are possible values for prev?
+    }
+    ```
+### Insert in sorted order
+```cpp
+void InsertSorted(Entry * &list, Entry * newOne)
+{
+    Entry *cur, *prev = NULL;
+    for (cur=list; cur!=NULL; cur=cur->next){
+        if (newOne->name < cur->name) break;
+        prev = cur;
+    }
+    newOne->next = cur; // splice outgoing ptr
+    if (prev != NULL)
+        prev->next = newOne; // splice incoming ptr
+    else
+        list = newOne; // note special case!
+}
+### Recursive insert
+```cpp
+void InsertSorted(Entry * &list, Entry *newOne)
+{
+    if (list == NULL || newOne->name < list->name){
+        newOne->next = list;
+        list = newOne;
+    } else {
+        InsertSorted(list->next, newOne);
+    }
+}
+```
+* WOw!
+    * Elegant, direct expression of algorithm
+    * Dense use of pointers and recursion
+
+## Lec14
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
