@@ -2145,8 +2145,84 @@ struct coordT {
 Vector<coordT> c;
 PrintVector(c);
 ```
+* Compiler's response
+![](https://github.com/liangsihuang/Stanford-CS106B/raw/master/pics/error.png)
+* Template error reporting
+    * Template itself is largely ignored by compiler
+    * When called, version is created with placeholder filled in, and only then is compiled
+    * Errors within template now reported, triggered by client's instantiation
+* Template may have hidden requirements on type
+    * e.g. Uses << to output or compares using ==
+    * Code instantiated won't compile if type doesn't support needed ops
+    * Most common operators to watch for: output, assignment, comparison/relational
+### Sort template
+```cpp
+template <typename Type>
+void sort(Vector<Type> &v)
+{
+    for (int i = 0; i < v.size()-1; i++) {
+        int minIndex = i ;
+        for (int j = i+1; j < v.size(); j++) {
+            if (v[j] < v[minIndex])
+                minIndex = j;
+        }
+        Swap(v[i], v[minIndex]);
+    }
+}
+```
+* Template functions awesome for algorithms
+    * Searching (linear/binary), sorting(all varieties), median, mode, permute, summarize, remove, duplicates, etc.
+* Client use of Sort template
+```cpp
+int main()
+{
+    Vector<int> nums = ...;
+    Sort(nums);
 
-lec16 to be continue
+    Vector<string> strs = ...;
+    Sort(strs);
+}
+```
+* What must be true about the element type?
+    * Will every type work?
+    * Consider:
+    ```cpp
+    struct coordT {
+        double x, y;
+    }
+    Vector<coordT> pts;
+    Sort(pts);
+    ```
+### Fully generic sort
+* Sort function template uses < to compare elements
+    * This works for some types, but not all
+* Division between client/implementor
+    * Client knows how data is to be compared
+    * Implementor is the one doing the actual comparing
+* Need client/implementor cooperation
+    * Client tells implementor how to appropriately compare elements
+* Add function parameter
+    * Client knows how to compare elements, it supplies this knowledge in the form of a function pointer
+    * Callback function - implementation "calls back" to client
+### Sort template with callback fn
+```cpp
+template <typename Type>
+void Sort(Vector<Type> &v, int (cmp)(Type, Type))
+{
+    for (int i = 0; i < v.size() -1; i++) {
+        int minIndex = i;
+        for (int j = i+1; j < v.size(); j++) {
+            if (cmp(v[j], v[minIndex]<0) < 0)
+                minIndex = j;
+        }
+        Swap(v[i], v[minIndex]);
+    }
+}
+```
+* Now can truly work for all types!
+    * Client supplies function pointer to handle compare
+
+## lec17
 
 
 
