@@ -219,4 +219,4 @@ bool Time::isLessThan(Time other) {
     * `class.h` has `#include "class.cpp"` at end to pull in code
     * Including a .cpp file is wacky, only used for class template situation
 
-## Lec20
+## Lec20 
